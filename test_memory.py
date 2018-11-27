@@ -1,44 +1,41 @@
 from pympler import asizeof
 
-class Memory:
-    def counter_size(self, obj):
-        return asizeof.asizeof(obj)
 
-    def obj_memory(self, tup):
-        memory = 0
+class ObjectMemory:
+    def __init__(self, obj, show=False):
+        self.__memory = 0
+        self.__in = True
+        self.show = show
 
-        flag_tuple = True
-        flag_list = True
+    def __counter_size(self, obj):
+        size = asizeof.asizeof(obj)
+        if self.show is True:
+            print(size, 'bytes in:', obj)
+        return size
 
-        if type(tup) is tuple:
-            memory += self.counter_size(())
-            print('RETURNS TUPLE:', self.counter_size(()))
-        elif type(tup) is list:
-            memory += self.counter_size([])
-            print('RETURNS LIST:', self.counter_size([]))
-            
-        for t in tup:
-            tt = type(t)
-            if tt is not tuple and tt is not list:
-                memory += self.counter_size(t)
-                print('COUNT', self.counter_size(t))
-            elif tt is list or tt is tuple:
-                if flag_tuple is True and tt is tuple:
-                    memory += self.counter_size(())
-                    print('SEARCH TUPLE:', self.counter_size(()))
-                    flag_tuple = False
-                elif flag_list is True and tt is list:
-                    memory += self.counter_size([])
-                    print('SEARCH LIST:', self.counter_size([]))
-                    flag_list = False
-                for num, a in enumerate(t):
-                    tmp_mem = self.counter_size(a)
-                    memory += tmp_mem
-                    print('INDEX:', num, '\n\tVALUE:', a, '\n\tMEMORY:', tmp_mem)
-        
-        return memory
+    def memory_null(self):
+        self.__memory = 0
 
-# TEST
-a = (10, 100000, 999999999999999999, -999999999999, [10, 10, (10, 40)])
-m = Memory()
-print('REAL MEMORY:', m.obj_memory(a))
+    def size_obj(self, obj):
+        if self.__in:
+            if type(obj) is tuple:
+                self.__memory += self.__counter_size(())
+                self.__in = False
+            elif type(obj) is list:
+                self.__memory += self.__counter_size([])
+                self.__in = False
+            else:
+                return self.__counter_size(obj)
+
+        for i in obj:
+            if type(i) is tuple:
+                self.__memory += self.__counter_size(())
+                self.size_obj(i)
+            elif type(i) is list:
+                self.__memory += self.__counter_size([])
+                self.size_obj(i)
+            else:
+                cnt = self.__counter_size(i)
+                self.__memory += cnt
+
+        return self.__memory
