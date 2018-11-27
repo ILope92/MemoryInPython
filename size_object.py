@@ -3,6 +3,7 @@ from pympler import asizeof
 
 class Memory:
     __slots__ = ('__memory', '__in', '__show')
+
     def __counter_size(self, obj):
         size = asizeof.asizeof(obj)
         if self.__show is True:
@@ -16,15 +17,6 @@ class Memory:
         return self.__size_obj(obj)
 
     def __size_obj(self, obj):
-        """Iter obj
-        
-        Arguments:
-            obj {[all]} -- [object memory]
-        
-        Returns:
-            [int] -- [memory in obj]
-        """
-
         if self.__in:
             if type(obj) is tuple:
                 self.__memory += self.__counter_size(())
