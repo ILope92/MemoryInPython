@@ -5,11 +5,11 @@ class ObjectMemory:
     def __init__(self, obj, show=False):
         self.__memory = 0
         self.__in = True
-        self.show = show
+        self.__show = show
 
     def __counter_size(self, obj):
         size = asizeof.asizeof(obj)
-        if self.show is True:
+        if self.__show is True:
             print(size, 'bytes in:', obj)
         return size
 
